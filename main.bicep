@@ -1,23 +1,13 @@
-param sshRSAPublicKey string
 param location string = 'East US'
-param resourceGroupName string
+param resourceGroup string
 param aksClusterName string
 param acrName string
+param sshPublicKey string
 param argocdAdminPassword string
+param clientId string
+param secret string
 
 targetScope = 'resourceGroup'
-
-resource azapiResourceSshPublicKey 'Microsoft.Compute/sshPublicKeys@2022-11-01' = {
-  name: 'sshKey'
-  location: location
-}
-
-resource azapiResourceActionSshPublicKeyGen 'Microsoft.Compute/sshPublicKeys/generateKeyPair@2022-11-01' = {
-  name: '${azapiResourceSshPublicKey.name}/generateKeyPair'
-  method: 'POST'
-  parent: azapiResourceSshPublicKey
-}
-output keyData string = azapiResourceActionSshPublicKeyGen.properties['publicKey']
 
 resource acr 'Microsoft.ContainerRegistry/registries@2021-07-01' = {
   name: acrName
@@ -57,30 +47,30 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-06-01' = {
     enableAutoScaling: true
     autoScalerProfile: {
       balanceSimilarNodeGroups: true
-      maxNodeCount: 5
+      maxNodeCount: 2
       minNodeCount: 1
       profiles: [
         {
           name: 'default'
           minNodeCount: 1
-          maxNodeCount: 5
+          maxNodeCount: 2
           enabled: true
         }
       ]
     }
     linuxProfile: {
-      adminUsername: 'aksadmin'
+      adminUsername: adminUsername
       ssh: {
         publicKeys: [
           {
-            keyData: azapiResourceActionSshPublicKeyGen.properties['publicKey']
+            keyData: sshPublicKey
           }
         ]
       }
     }
     servicePrincipalProfile: {
-      clientId: 'CLIENT_ID'
-      secret: 'CLIENT_SECRET'
+      clientId: clientId
+      secret: secret
     }
     identity: {
       type: 'SystemAssigned'
