@@ -1,15 +1,14 @@
 param location string = 'East US'
-param resourceGroup string
 param aksClusterName string
 param acrName string
 param sshPublicKey string
 param argocdAdminPassword string
-param clientId string
-param secret string
+param clientId string @secure()
+param secret string @secure()
 
 targetScope = 'resourceGroup'
 
-resource acr 'Microsoft.ContainerRegistry/registries@2021-07-01' = {
+resource acr 'Microsoft.ContainerRegistry/registries@2023-01-01' = {
   name: acrName
   location: location
   sku: {
@@ -17,7 +16,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2021-07-01' = {
   }
 }
 
-resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-06-01' = {
+resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-03-01' = {
   name: aksClusterName
   location: location
   tags: {
@@ -81,7 +80,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-06-01' = {
   ]
 }
 
-resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@2021-06-01' = {
+resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@2023-03-01' = {
   name: 'argocd'
   location: location
   dependsOn: [
@@ -89,8 +88,8 @@ resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@
   ]
 }
 
-resource argocd 'Microsoft.ContainerService/managedClusters/providers/extensions@2021-06-01' = {
-  name: '${aksClusterName}-argocd'
+resource argocd 'Microsoft.ContainerService/managedClusters/providers/extensions@2023-03-01' = {
+  name: aksClusterName-argocd
   location: location
   properties: {
     apiVersion: 'apps/v1'
@@ -143,8 +142,8 @@ resource argocd 'Microsoft.ContainerService/managedClusters/providers/extensions
   }
 }
 
-resource ingressController 'Microsoft.ContainerService/managedClusters/providers/extensions@2021-06-01' = {
-  name: '${aksClusterName}-nginx-ingress'
+resource ingressController 'Microsoft.ContainerService/managedClusters/providers/extensions@2023-03-01' = {
+  name: aksClusterName-nginx-ingress
   location: location
   properties: {
     apiVersion: 'apps/v1'
@@ -177,17 +176,17 @@ resource ingressController 'Microsoft.ContainerService/managedClusters/providers
               ports: [
                 {
                   containerPort: 80
-                },
+                }
                 {
                   containerPort: 443
                 }
               ]
               args: [
-                '--nginx-configmap=$(POD_NAMESPACE)/ingress-nginx-controller',
-                '--udp-services-configmap=$(POD_NAMESPACE)/ingress-nginx-controller',
-                '--tcp-services-configmap=$(POD_NAMESPACE)/ingress-nginx-controller',
-                '--publish-service=$(POD_NAMESPACE)/ingress-nginx-controller',
-                '--annotations-prefix=nginx.ingress.kubernetes.io',
+                '--nginx-configmap=$(POD_NAMESPACE)/ingress-nginx-controller'
+                '--udp-services-configmap=$(POD_NAMESPACE)/ingress-nginx-controller'
+                '--tcp-services-configmap=$(POD_NAMESPACE)/ingress-nginx-controller'
+                '--publish-service=$(POD_NAMESPACE)/ingress-nginx-controller'
+                '--annotations-prefix=nginx.ingress.kubernetes.io'
               ]
             }
           ]
