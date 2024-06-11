@@ -6,7 +6,7 @@
       "value": "East US"
     },
     "resourceGroupName": {
-      "value": "aks=rg"
+      "value": "aks-rg"
     },
     "aksClusterName": {
       "value": "myakscluster"
