@@ -5,7 +5,7 @@ param aksClusterName string
 param acrName string
 param argocdAdminPassword string
 
-resource acr 'Microsoft.ContainerRegistry/registries@2023-01-01' = {
+resource acr 'Microsoft.ContainerRegistry/registries@2022-11-01' = {
   name: acrName
   location: location
   sku: {
@@ -76,15 +76,12 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-11-01-previ
   ]
 }
 
-resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@2021-11-01-preview' = {
+resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@2022-11-01' = {
   name: argocd
   location: location
-  dependsOn: [
-    aksCluster
-  ]
 }
 
-resource argocd 'Microsoft.ContainerService/managedClusters/providers/extensions@2021-11-01-preview' = {
+resource argocd 'Microsoft.ContainerService/managedClusters/providers/extensions@2022-11-01' = {
   name: '${aksClusterName}-argocd'
   location: location
   properties: {
