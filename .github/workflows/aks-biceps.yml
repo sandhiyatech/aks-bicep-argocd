@@ -27,4 +27,4 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy AKS cluster
-        run: az deployment group create --resource-group aks-rg --template-file main.json --parameters parameters.json
+        run: az deployment group create --resource-group aks-rg --template-file main.bicep --parameters parameters.json
