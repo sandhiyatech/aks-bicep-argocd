@@ -5,7 +5,7 @@
     "location": {
       "value": "East US"
     },
-    "resourceGroupName": {
+    "resourceGroup": {
       "value": "aks-rg"
     },
     "aksClusterName": {
@@ -16,6 +16,18 @@
     },
     "argocdAdminPassword": {
       "value": "Sanvenky@143"
-    }
+    },
+    "clientId": {
+      "value": "a66844d1-eba8-490a-b41d-c9bc73fcdb96"
+    },
+    "secret": {
+      "value": "Pqg8Q~NWBNBlpFUv7Ou4DwJtclCU1Q5rG2fbNaFS"
+    },
+    ""secret": {
+      "value": "Pqg8Q~NWBNBlpFUv7Ou4DwJtclCU1Q5rG2fbNaFS"
+    },
+    "sshPublicKey": {
+      "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTt9KKGYoomRs7sYjerEsNFKOcb9e0tmH1hisjyEnPztwLjhiCG7y8b0Hs8PJtIPHDZav++m7cC14wRlmS/xSv/WyxA8tWqxB5w2bc8USycX4nn1zLMCXeFZP5pxPq9uX0C+Afu6h8jSMAG7010/tHWpEaYAZGUrTJ7lZg0vgk1sQ4qPcQHeI1NWNHZuFQ10a7vVtwyGB+L929F9kAKK6Z6qC/jllVBuS5lKWzpqHUdari0wQOOqUGDk2SaIS5Xb5xTLqa2E2/sAA5JcHgwbldyEH21nmHCF1upjiCKDX6RfP0r341G1nPl/Lg9WQ7Z7A7Lc47QBBKOzTkyVlP/i0bu2JzfEzQZU9C21A4yLurKG0lKY1I3Efr0ufwNBbUcbphf2AWa8DSb79UrW9fJeKyDdNtkrYTiN0DyjAD8lMmsbIlKhj78kU1cHsIu75yS1SMqioA0NlRklAnxfmPrm1YUyBSXjimD4ExdIolh2yvSaR90reTMb17rsTaz0AyYVE= generated-by-azure"
+    },
   }
 }
