@@ -58,7 +58,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-08-01' = {
       ssh: {
         publicKeys: [
           {
-            keyData: keyData
+            keyData: sshRSAPublicKey
           }
         ]
       }
