@@ -77,7 +77,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-08-01' = {
 }
 
 resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@2021-08-01' = {
-  name: 'argocd'
+  name: argocd
   location: location
   dependsOn: [
     aksCluster
@@ -163,3 +163,7 @@ resource ingressController 'Microsoft.ContainerService/managedClusters/providers
           labels: {
             app: 'nginx-ingress'
           }
+        }
+      }
+  }
+}
