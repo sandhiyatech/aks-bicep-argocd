@@ -3,8 +3,8 @@ param aksClusterName string
 param acrName string
 param sshPublicKey string
 param argocdAdminPassword string
-param clientId string @secure()
-param secret string @secure()
+param clientId string 
+param secret string 
 
 targetScope = 'resourceGroup'
 
