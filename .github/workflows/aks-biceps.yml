@@ -17,6 +17,8 @@ jobs:
         uses: azure/CLI@v1
         with:
           azcliversion: latest
+          inlineScript: |
+            echo "Azure CLI installed successfully."
 
       - name: Login to Azure
         run: az login --service-principal -u ${{ secrets.AZURE_SERVICE_PRINCIPAL_ID }} -p ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
