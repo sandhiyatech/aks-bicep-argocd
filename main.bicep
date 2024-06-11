@@ -1,14 +1,11 @@
+param sshRSAPublicKey string
 param location string = 'East US'
+param resourceGroupName string
 param aksClusterName string
 param acrName string
-param sshPublicKey string
 param argocdAdminPassword string
-param clientId string 
-param secret string 
 
-targetScope = 'resourceGroup'
-
-resource acr 'Microsoft.ContainerRegistry/registries@2023-01-01' = {
+resource acr 'Microsoft.ContainerRegistry/registries@2021-06-01' = {
   name: acrName
   location: location
   sku: {
@@ -16,7 +13,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-01-01' = {
   }
 }
 
-resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-03-01' = {
+resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-08-01' = {
   name: aksClusterName
   location: location
   tags: {
@@ -28,7 +25,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-03-01' = {
     agentPoolProfiles: [
       {
         name: 'agentpool'
-        count: 3
+        count: 2
         vmSize: 'Standard_DS2_v2'
         osType: 'Linux'
         maxPods: 30
@@ -58,18 +55,17 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-03-01' = {
       ]
     }
     linuxProfile: {
-      adminUsername: adminUsername
       ssh: {
         publicKeys: [
           {
-            keyData: sshPublicKey
+            keyData: keyData
           }
         ]
       }
     }
     servicePrincipalProfile: {
-      clientId: clientId
-      secret: secret
+      clientId: 'CLIENT_ID'
+      secret: 'CLIENT_SECRET'
     }
     identity: {
       type: 'SystemAssigned'
@@ -80,7 +76,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-03-01' = {
   ]
 }
 
-resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@2023-03-01' = {
+resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@2021-08-01' = {
   name: 'argocd'
   location: location
   dependsOn: [
@@ -88,8 +84,8 @@ resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@
   ]
 }
 
-resource argocd 'Microsoft.ContainerService/managedClusters/providers/extensions@2023-03-01' = {
-  name: aksClusterName-argocd
+resource argocd 'Microsoft.ContainerService/managedClusters/providers/extensions@2021-08-01' = {
+  name: '${aksClusterName}-argocd'
   location: location
   properties: {
     apiVersion: 'apps/v1'
@@ -142,8 +138,8 @@ resource argocd 'Microsoft.ContainerService/managedClusters/providers/extensions
   }
 }
 
-resource ingressController 'Microsoft.ContainerService/managedClusters/providers/extensions@2023-03-01' = {
-  name: aksClusterName-nginx-ingress
+resource ingressController 'Microsoft.ContainerService/managedClusters/providers/extensions@2021-08-01' = {
+  name: '${aksClusterName}-nginx-ingress'
   location: location
   properties: {
     apiVersion: 'apps/v1'
@@ -167,31 +163,3 @@ resource ingressController 'Microsoft.ContainerService/managedClusters/providers
           labels: {
             app: 'nginx-ingress'
           }
-        }
-        spec: {
-          containers: [
-            {
-              name: 'nginx-ingress-controller'
-              image: 'k8s.gcr.io/ingress-nginx/controller:v1.0.4'
-              ports: [
-                {
-                  containerPort: 80
-                }
-                {
-                  containerPort: 443
-                }
-              ]
-              args: [
-                '--nginx-configmap=$(POD_NAMESPACE)/ingress-nginx-controller'
-                '--udp-services-configmap=$(POD_NAMESPACE)/ingress-nginx-controller'
-                '--tcp-services-configmap=$(POD_NAMESPACE)/ingress-nginx-controller'
-                '--publish-service=$(POD_NAMESPACE)/ingress-nginx-controller'
-                '--annotations-prefix=nginx.ingress.kubernetes.io'
-              ]
-            }
-          ]
-        }
-      }
-    }
-  }
-}
