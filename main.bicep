@@ -3,15 +3,9 @@ param location string = 'East US'
 param resourceGroupName string
 param aksClusterName string
 param acrName string
-param sshPublicKey string
 param argocdAdminPassword string
 
 targetScope = 'resourceGroup'
-
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: location
-}
 
 resource azapiResourceSshPublicKey 'Microsoft.Compute/sshPublicKeys@2022-11-01' = {
   name: 'sshKey'
@@ -79,7 +73,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-06-01' = {
       ssh: {
         publicKeys: [
           {
-            keyData: sshPublicKey
+            keyData: azapiResourceActionSshPublicKeyGen.properties['publicKey']
           }
         ]
       }
