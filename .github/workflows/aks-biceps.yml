@@ -13,21 +13,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Azure CLI
-        uses: azure/CLI@v1
+      - name: Install Bicep CLI
+        uses: azure/setup-bicep@v0.3.9
+
+      - name: Build Bicep template
+        run: bicep build main.bicep --stdout > main.json
+
+      - name: Log in to Azure
+        uses: azure/login@v1
         with:
-          azcliversion: latest
-          inlineScript: |
-            echo "Azure CLI installed successfully."
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Login to Azure
-        run: az login --service-principal -u ${{ secrets.AZURE_SERVICE_PRINCIPAL_ID }} -p ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-
-      - name: Set Azure subscription
-        run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Validate Bicep file
-        run: az bicep build main.bicep --validate
-
-      - name: Deploy resources
-        run: az deployment sub create --template-file main.bicep --parameters parameters.json
+      - name: Deploy AKS cluster
+        run: az deployment sub create --name "AKS-Deployment-$(date +%s)" --template-file main.json --parameters parameters.json
