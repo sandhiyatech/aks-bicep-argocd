@@ -5,7 +5,7 @@ param aksClusterName string
 param acrName string
 param argocdAdminPassword string
 
-resource acr 'Microsoft.ContainerRegistry/registries@2021-06-01' = {
+resource acr 'Microsoft.ContainerRegistry/registries@2023-01-01' = {
   name: acrName
   location: location
   sku: {
@@ -13,7 +13,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2021-06-01' = {
   }
 }
 
-resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-08-01' = {
+resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-03-01' = {
   name: aksClusterName
   location: location
   tags: {
@@ -76,7 +76,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-08-01' = {
   ]
 }
 
-resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@2021-08-01' = {
+resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@2023-03-01' = {
   name: argocd
   location: location
   dependsOn: [
@@ -84,7 +84,7 @@ resource argocdNamespace 'Microsoft.ContainerService/managedClusters/namespaces@
   ]
 }
 
-resource argocd 'Microsoft.ContainerService/managedClusters/providers/extensions@2021-08-01' = {
+resource argocd 'Microsoft.ContainerService/managedClusters/providers/extensions@2023-03-01' = {
   name: '${aksClusterName}-argocd'
   location: location
   properties: {
@@ -138,7 +138,7 @@ resource argocd 'Microsoft.ContainerService/managedClusters/providers/extensions
   }
 }
 
-resource ingressController 'Microsoft.ContainerService/managedClusters/providers/extensions@2021-08-01' = {
+resource ingressController 'Microsoft.ContainerService/managedClusters/providers/extensions@2023-03-01' = {
   name: '${aksClusterName}-nginx-ingress'
   location: location
   properties: {
